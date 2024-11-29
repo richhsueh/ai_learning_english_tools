@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英文學習助手</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- Logo按鈕 -->
+    <a href="/" class="logo-button" tabindex="-1">
+        <img src="logo.png" alt="Home" class="logo-image">
+    </a>
+    <button class="sidebar-toggle" id="sidebarToggle">
+        ☰
+    </button>
+    <div class="container">
+        <!-- 左側文章列表 -->
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-close" id="sidebarClose">×</button>
+            <h2>文章列表</h2>
+            <div class="article-list">
+                <button class="add-article">+ 新增文章</button>
+                <div id="articleList"></div>
+            </div>
+        </aside>
+
+        <!-- 主要內容區 -->
+        <main class="main-content">
+            <div id="welcome-screen">
+                <h1>歡迎使用英文學習助手</h1>
+                <p>點擊左側文章開始閱讀，或新增一篇文章</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <h3>🔍 單字查詢</h3>
+                        <p>點擊任何單字即可查看詳細解釋</p>
+                    </div>
+                    <div class="feature">
+                        <h3>🔊 發音功能</h3>
+                        <p>支援英美發音，幫助提升口說能力</p>
+                    </div>
+                    <div class="feature">
+                        <h3>📝 例句學習</h3>
+                        <p>提供豐富例句，加深單字理解</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 單字解釋彈窗 -->
+    <div id="wordModal" class="modal">
+        <!-- Modal content will be inserted here -->
+    </div>
+
+    <!-- 語速控制 -->
+    <div class="speed-control">
+        <label for="speechRate">語速：</label>
+        <select id="speechRate" onchange="setSpeechRate(this.value)">
+            <option value="0.5">0.5x (慢速)</option>
+            <option value="0.7">0.7x (較慢)</option>
+            <option value="1.0" selected>1.0x (正常)</option>
+            <option value="1.2">1.2x (較快)</option>
+            <option value="1.5">1.5x (快速)</option>
+        </select>
+    </div>
+    
+    <!-- JavaScript 文件 -->
+    <script src="scripts/dictionary.js"></script>
+    <script src="scripts/audio.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html> 

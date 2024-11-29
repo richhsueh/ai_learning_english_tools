@@ -1,0 +1,986 @@
+:root {
+    --primary-color: #007AFF;
+    --background-color: #F5F5F7;
+    --text-color: #1D1D1F;
+    --border-radius: 10px;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --sidebar-width: 300px;
+    --header-height: 60px;
+    --content-max-width: 1200px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* 容器布局 */
+.container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    min-height: 100vh;
+    position: relative;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    overflow-x: hidden;
+}
+
+/* 側邊欄樣式修改 */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: white;
+    box-shadow: var(--shadow);
+    height: 100vh;
+    position: fixed;
+    right: calc(-1 * var(--sidebar-width));
+    top: 0;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px;
+}
+
+/* 側邊欄標題樣式 */
+.sidebar h2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 20px;
+    font-size: 1.5em;
+    color: var(--text-color);
+    background: white;
+    border-bottom: 1px solid #eee;
+    z-index: 2;
+}
+
+/* 文章列表容器樣式 */
+.article-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* 文章列表項目容器 */
+#articleList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-bottom: 20px;
+}
+
+/* 文章項目樣式 */
+.article-item {
+    background-color: #f8f9fa;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+/* 文章內容包裝器 */
+.article-content-wrapper {
+    flex: 1;
+    min-width: 0;
+    padding-right: 40px;
+}
+
+/* 文章標題和預覽文字 */
+.article-item h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.article-preview {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 刪除按鈕樣式優化 */
+.delete-article {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background-color: transparent;
+    color: #dc3545;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+    z-index: 2;
+}
+
+.delete-article:hover {
+    background-color: #ffebee;
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* 確保點擊事件正確觸發 */
+.article-item {
+    pointer-events: none;
+}
+
+.article-content-wrapper,
+.delete-article {
+    pointer-events: auto;
+}
+
+/* 文章項目懸停效果 */
+.article-item:hover {
+    background-color: #e9ecef;
+}
+
+/* 確保滾動條樣式 */
+.article-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.article-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.article-list::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.article-list::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+/* 新增文章按鈕樣式優化 */
+.add-article {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 15px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.add-article:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 確保側邊欄在滾動時內容不會被切掉 */
+.sidebar.active {
+    right: 0;
+}
+
+/* 側邊欄打開時的背景遮罩 */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* 側邊欄切換按鈕樣式 */
+.sidebar-toggle {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    z-index: 1001;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-toggle:hover {
+    transform: scale(1.3);  /* 增加懸浮時的放大效果 */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background: #007AFF;
+    color: white;
+}
+
+/* 當側邊欄打開時，隱藏切換按鈕 */
+.sidebar-toggle.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+}
+
+/* 側邊欄內的關閉按鈕 */
+.sidebar-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.sidebar-close:hover {
+    transform: rotate(90deg);
+}
+
+/* 主要內容區域 */
+.main-content {
+    padding: 40px;
+    margin-right: 0;
+    margin-left: 0;
+    transition: margin-right 0.3s ease;
+    width: 100%;
+    max-width: var(--content-max-width);
+    overflow-x: visible;
+}
+
+.main-content.shifted {
+    margin-right: var(--sidebar-width);
+    margin-left: 0;
+}
+
+/* 歡迎畫面樣式 */
+#welcome-screen {
+    max-width: 1000px;
+    margin: 40px auto;
+    text-align: center;
+    padding: 40px;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.feature {
+    background: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: transform 0.2s;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.feature:hover {
+    transform: translateY(-5px);
+}
+
+/* 單字彈窗樣式 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    cursor: pointer;
+}
+
+.modal-content {
+    position: relative;
+    background: white;
+    margin: 50px auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    cursor: default;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* 響應式設計 */
+@media (max-width: 1200px) {
+    .features {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        right: -100%;
+    }
+
+    .main-content.shifted {
+        margin-right: 0;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    #welcome-screen {
+        padding: 20px;
+    }
+
+    .features {
+        gap: 20px;
+    }
+
+    .feature {
+        padding: 20px;
+        min-height: 150px;
+    }
+
+    .sidebar-toggle {
+        right: 10px;
+    }
+
+    .logo-button {
+        left: 10px;
+    }
+}
+
+/* 文章編輯器容器樣式 */
+.article-editor {
+    max-width: 1040px;
+    width: 90%;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: default;
+}
+
+/* 標題輸入框 */
+.editor-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* 內容輸入框 */
+.editor-textarea {
+    width: 100%;
+    height: 300px; /* 縮小50% */
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* 輸入框焦點效果 */
+.editor-input:focus,
+.editor-textarea:focus {
+    outline: none;
+    border-color: #007AFF;
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
+}
+
+/* 編輯器標題 */
+.article-editor h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #1D1D1F;
+}
+
+/* 響應式調整 */
+@media (max-width: 1100px) {
+    .article-editor {
+        width: 95%;
+        max-width: 95%;
+        padding: 20px;
+        margin: 10px auto;
+    }
+}
+
+.editor-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.save-btn, .cancel-btn {
+    padding: 12px 30px;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.save-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #0056b3;
+}
+
+.cancel-btn {
+    background-color: #e9ecef;
+    color: var(--text-color);
+}
+
+.cancel-btn:hover {
+    background-color: #dee2e6;
+}
+
+/* 文章顯示樣式 */
+.article-content {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.article-text {
+    line-height: 1.8;
+    font-size: 18px;
+}
+
+.word {
+    display: inline-block;
+    padding: 2px 4px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.word-hover {
+    background-color: #bbdefb;
+    color: #1565c0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+/* 添加淡入淡出動畫 */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.fade-out {
+    opacity: 1;
+    transform: translateY(0);
+    animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* 成功提示訊息樣式 */
+.success-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px 32px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    z-index: 2000;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.success-message.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* 錯誤提示訊息樣式 */
+.error-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background-color: #f44336;
+    color: white;
+    padding: 16px 32px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    z-index: 2000;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.error-message.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* Logo 按鈕樣式 */
+.logo-button {
+    position: fixed;
+    left: 20px;
+    right: auto;
+    top: 20px;
+    z-index: 1001;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;  /* 增加到 60px */
+    height: 60px; /* 增加到 60px */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+}
+
+.logo-button:hover {
+    transform: scale(1.3);  /* 增加懸浮時的放大效果 */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background: #f8f9fa;
+}
+
+.logo-image {
+    width: 36px;  /* 增加圖標尺寸 */
+    height: 36px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.logo-button:hover .logo-image {
+    transform: scale(1.1);  /* 圖標放大效果 */
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+    .logo-button {
+        right: 10px;
+        top: 10px;
+    }
+}
+
+/* 文章內容區域 */
+.article-content-wrapper {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* 文章內容動畫效果 */
+.article-content.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: contentFadeIn 0.5s ease forwards;
+}
+
+@keyframes contentFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 側邊欄切換按鈕過渡效果 */
+.sidebar-toggle {
+    /* 保持原有樣式 */
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-toggle.hidden {
+    opacity: 0;
+    transform: scale(0.8);
+    visibility: visible; /* 改為 visible 以支持動畫 */
+    pointer-events: none; /* 防止點擊 */
+}
+
+/* 側邊欄過渡效果優化 */
+.sidebar {
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-content {
+    transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 增文章頁面樣式優化 */
+.article-editor-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+    padding: 80px 40px 40px 40px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    cursor: pointer;
+}
+
+/* 編輯器容器樣式 */
+.article-editor {
+    cursor: default;
+    width: 100%;
+    height: calc(100vh - 120px); /* 調整高度以適應視窗 */
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 防止容器滾動 */
+}
+
+/* 編輯器內容區域 */
+.editor-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow: hidden; /* 防止內容區域滾動 */
+}
+
+/* 標題輸入框 */
+.editor-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* 內容輸入框 */
+.editor-textarea {
+    width: 100%;
+    flex: 1; /* 讓文本區域填充剩餘空間 */
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    line-height: 1.6;
+    background-color: #f8f9fa;
+    resize: none; /* 禁用手動調整大小 */
+    box-sizing: border-box;
+    overflow-y: auto; /* 只在文本區域內滾動 */
+}
+
+/* 按鈕容器 */
+.editor-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    padding: 15px 0;
+    margin-top: auto;
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+    .article-editor-page {
+        padding: 80px 20px 20px 20px;
+    }
+
+    .article-editor {
+        padding: 20px;
+        max-height: calc(100vh - 100px);
+    }
+
+    .editor-textarea {
+        max-height: calc(100vh - 300px);
+    }
+}
+
+/* 發音區域樣式更新 */
+.pronunciations {
+    display: flex;
+    gap: 1rem;
+    margin: 0.5rem 0;
+}
+
+.phonetic {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f5f5f7;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+}
+
+.meaning {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.examples {
+    margin-top: 1rem;
+    padding-left: 1rem;
+    border-left: 3px solid #e9ecef;
+}
+
+.example {
+    margin: 0.8rem 0;
+}
+
+.example .english {
+    color: #1d1d1f;
+    margin-bottom: 0.3rem;
+}
+
+.example .chinese {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* 句子容器樣式更新 */
+.sentence-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    margin: 4px 0;
+    position: relative;
+    min-height: 60px;
+}
+
+/* 奇數行和偶數行的背景色 */
+.even-row {
+    background-color: #f0f2f5;
+}
+
+.odd-row {
+    background-color: #ffffff;
+}
+
+/* 句子文本樣式 */
+.sentence {
+    flex: 1;
+    line-height: 1.8;
+    margin-right: 10px; /* 為播放按鈕預留空間 */
+    word-wrap: break-word;
+}
+
+/* 播放按鈕樣式更新 */
+.play-sentence {
+    position: relative; /* 改為相對定位 */
+    right: auto; /* 移除右側固定定位 */
+    top: auto;
+    transform: none; /* 移除垂直置中變換 */
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    flex-shrink: 0; /* 防止按鈕被壓縮 */
+}
+
+/* 懸停效果 */
+.sentence-container:hover {
+    background-color: #e9ecef;
+}
+
+.sentence-container:hover .play-sentence {
+    opacity: 1;
+    background-color: #e3f2fd;
+    color: #007AFF;
+}
+
+/* 響應式調整 */
+@media screen and (max-width: 768px) {
+    .sentence-container {
+        padding: 12px 16px;
+    }
+
+    .play-sentence {
+        min-width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+}
+
+/* 語速控制樣式更新 */
+.speed-control {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+.speed-control:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.speed-control label {
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.speed-control select {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.speed-control select:hover {
+    border-color: var(--primary-color);
+    background-color: #fff;
+}
+
+.speed-control select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
+}
+
+/* 響應式調整 */
+@media screen and (max-width: 768px) {
+    .speed-control {
+        right: 10px;
+        bottom: 10px;
+        padding: 8px 12px;
+    }
+
+    .speed-control label {
+        font-size: 12px;
+    }
+
+    .speed-control select {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+}
+ 
